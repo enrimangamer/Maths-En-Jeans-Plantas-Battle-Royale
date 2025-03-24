@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     public List<GameObject> plantstiges = new List<GameObject>();
     private float timer = 0;
     public GameObject selectionCircle;
-    public Camera playerCamera;
     public GameObject ground;
     public GameObject tigePrefab;
     public GameObject parentPrefab;
@@ -24,6 +23,8 @@ public class GameManager : MonoBehaviour
 
 
     private int name = 1;
+    Camera cam;
+
 
     List<GameObject> Evolve()
     {
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviour
     {
         plantstiges = (GameObject.FindGameObjectsWithTag("PlantTige")).ToList();
         timer = Time.time;
+        cam = Camera.main;
     }
 
     // Update is called once per frame
@@ -125,17 +127,17 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            GameObject newparent = Instantiate(parentPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
             GameObject newtige = Instantiate(tigePrefab, selectionCircle.transform.position, Quaternion.identity);
             newtige.transform.parent = newparent.transform;
             plantstiges.Add(newtige);
         }
         selectionCircle.transform.position =
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, ground.transform.position.y, 0);
+            new Vector3(cam.ScreenToWorldPoint(Input.mousePosition).x, ground.transform.position.y, 0);
         if (timer + 2 < Time.time && move > 0)
         {
             move -= 1;
-            Camera.main.transform.position += new Vector3(0, -1, 0);
+            cam.transform.position += new Vector3(0, -1, 0);
             List<GameObject> newtiges = Evolve();
             for (int tige = 0; tige < newtiges.Count; tige++)
             {
@@ -156,11 +158,11 @@ public class GameManager : MonoBehaviour
         //to add
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Camera.main.orthographicSize += 1;
+            cam.orthographicSize += 1;
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
-            Camera.main.orthographicSize -= 1;
+            cam.orthographicSize -= 1;
         }
 
         if (Input.GetKeyDown(KeyCode.R))
