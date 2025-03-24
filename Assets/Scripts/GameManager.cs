@@ -8,18 +8,22 @@ using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using Object = System.Object;
 using Random = UnityEngine.Random;
+using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> plantstiges = new List<GameObject>();
-    private float timer = 0;
+    private float timer;
     public GameObject selectionCircle;
     public GameObject ground;
     public GameObject tigePrefab;
     public GameObject parentPrefab;
-    private int lastkey = 0;
-    private int move = 0;
+    private int lastkey;
+    private int move;
     Vector3 lastMousePosition;
+    public GameObject newplantinput;
+    public GameObject sliderhandle;
 
 
     private int name = 1;
@@ -39,6 +43,15 @@ public class GameManager : MonoBehaviour
                 newtige.GetComponent<LineRenderer>().positionCount += 1;
                 newtige.GetComponent<LineRenderer>().SetPosition(1,new Vector3(1,-1,0));
                 newtige.transform.parent = plantstiges[i].transform.parent;
+                
+                float alpha = 1.0f;
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(newtige.transform.parent.GetComponent<SpriteRenderer>().color, 0.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 1.0f)}
+                );
+                newtige.GetComponent<LineRenderer>().colorGradient = gradient;
+                
                 newtiges.Add(newtige);
             }
             linerenderer.positionCount += 1;
@@ -125,19 +138,34 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
-            GameObject newtige = Instantiate(tigePrefab, selectionCircle.transform.position, Quaternion.identity);
-            newtige.transform.parent = newparent.transform;
-            plantstiges.Add(newtige);
+            if (newplantinput.GetComponent<TMP_InputField>().text.Length == 4)
+            {
+                String input = newplantinput.GetComponent<TMP_InputField>().text;
+                newplantinput.GetComponent<TMP_InputField>().text = "";
+                GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
+                newparent.name = input;
+                newparent.GetComponent<SpriteRenderer>().color = sliderhandle.GetComponent<Image>().color;
+                GameObject newtige = Instantiate(tigePrefab, selectionCircle.transform.position, Quaternion.identity);
+                newtige.transform.parent = newparent.transform;
+            
+                float alpha = 1.0f;
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(newtige.transform.parent.GetComponent<SpriteRenderer>().color, 0.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 1.0f)}
+                );
+                newtige.GetComponent<LineRenderer>().colorGradient = gradient;
+            
+                plantstiges.Add(newtige);
+            }
         }
         selectionCircle.transform.position =
             new Vector3(cam.ScreenToWorldPoint(Input.mousePosition).x, ground.transform.position.y, 0);
         if (timer + 2 < Time.time && move > 0)
         {
             move -= 1;
-            cam.transform.position += new Vector3(0, -1, 0);
             List<GameObject> newtiges = Evolve();
             for (int tige = 0; tige < newtiges.Count; tige++)
             {
