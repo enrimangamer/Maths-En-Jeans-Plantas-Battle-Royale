@@ -18,7 +18,10 @@ public class GameManager : MonoBehaviour
     public GameObject ground;
     public GameObject tigePrefab;
     public GameObject parentPrefab;
-    private bool hasstarted = false;
+    private int lastkey = 0;
+    private int move = 0;
+    Vector3 lastMousePosition;
+
 
     private int name = 1;
 
@@ -129,8 +132,9 @@ public class GameManager : MonoBehaviour
         }
         selectionCircle.transform.position =
             new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, ground.transform.position.y, 0);
-        if (timer + 2 < Time.time && hasstarted)
+        if (timer + 2 < Time.time && move > 0)
         {
+            move -= 1;
             Camera.main.transform.position += new Vector3(0, -1, 0);
             List<GameObject> newtiges = Evolve();
             for (int tige = 0; tige < newtiges.Count; tige++)
@@ -163,10 +167,44 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene("SampleScene");
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            hasstarted = true;
+        
+        //jump 1 night thing
+        if(Input.anyKeyDown) {
+            if(Input.GetKeyDown(KeyCode.E)) {
+                if(lastkey == 0) {
+                    lastkey = 1;
+                } else {
+                    lastkey = 1;
+                }
+            } else if(Input.GetKeyDown(KeyCode.N)) {
+                if(lastkey == 1) {
+                    lastkey = 2;
+                } else {
+                    lastkey = 0;
+                }
+            } else if(Input.GetKeyDown(KeyCode.T)) {
+                if(lastkey == 2) {
+                    lastkey = 3;
+                } else {
+                    lastkey = 0;
+                }
+            } else if(Input.GetKeyDown(KeyCode.I)) {
+                if(lastkey == 3) {
+                    lastkey = 4;
+                } else {
+                    lastkey = 0;
+                }
+            } else if(Input.GetKeyDown(KeyCode.Q)) {
+                if(lastkey == 4)
+                {
+                    move = 5;
+                } else {
+                    lastkey = 0;
+                }
+            } else {
+                lastkey = 0;
+            }
         }
+        
     }
 }
