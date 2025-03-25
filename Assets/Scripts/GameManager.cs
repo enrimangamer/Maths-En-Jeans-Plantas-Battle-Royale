@@ -14,6 +14,7 @@ using UnityEngine.UI;
 public class Plant
 {
     public string id { get; set; }
+    public string password { get; set; }
     public int pointsAvailable { get; set; } = 5;
     public float[] oddsleft { get; set; } = { 1, 1, 1, 1, 1};
     public float[] oddsright { get; set; } = { 1, 1, 1, 1, 1};
@@ -45,6 +46,9 @@ public class GameManager : MonoBehaviour
     public GameObject[] oddslefttext;
     public GameObject[] oddsrighttext;
     public GameObject[] oddsattacktext;
+    public GameObject passwordinput;
+    public GameObject giftusername;
+    public GameObject giftquantity;
 
 
     private int name = 1;
@@ -274,6 +278,49 @@ public class GameManager : MonoBehaviour
         return 1;
     }
 
+    public void SendGift()
+    {
+        if (giftusername.GetComponent<TMP_InputField>().text.Length > 0 &&
+            giftquantity.GetComponent<TMP_InputField>().text.Length > 0)
+        {
+            try
+            {
+                int test = int.Parse(giftquantity.GetComponent<TMP_InputField>().text);
+            }
+            catch (Exception e)
+            {
+                return;
+            }
+
+            String username = giftusername.GetComponent<TMP_InputField>().text;
+            int quantity = int.Parse(giftquantity.GetComponent<TMP_InputField>().text);
+
+            if (quantity > 0 && plantmenuuser.pointsAvailable >= quantity)
+            {
+                Plant planttogift = new Plant();
+                bool userfound = false;
+                foreach (Plant plant in plants)
+                {
+                    if (plant.id == username)
+                    {
+                        userfound = true;
+                        planttogift = plant;
+                        break;
+                    }
+                }
+                if (!userfound)
+                {
+                    return;
+                }
+
+                planttogift.pointsAvailable += quantity;
+                plantmenuuser.pointsAvailable -= quantity;
+                UpdateOddsText();
+            }
+            
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -288,6 +335,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             String input = newplantinput.GetComponent<TMP_InputField>().text;
+            String password = passwordinput.GetComponent<TMP_InputField>().text;
+            if (input.Length == 0 || password.Length == 0)
+            {
+                return;
+            }
             bool idexists = false;
             Plant userplant = new Plant();
             foreach (Plant plant in plants)
@@ -301,6 +353,12 @@ public class GameManager : MonoBehaviour
             }
             if (idexists)
             {
+                if (userplant.password != password)
+                {
+                    newplantinput.GetComponent<TMP_InputField>().text = "";
+                    passwordinput.GetComponent<TMP_InputField>().text = "";
+                    return;
+                }
                 //User can control what his plant does
                 plantmenuuser = userplant;
                 plantMenu.SetActive(true);
@@ -309,6 +367,7 @@ public class GameManager : MonoBehaviour
                 
             } else {
                 newplantinput.GetComponent<TMP_InputField>().text = "";
+                passwordinput.GetComponent<TMP_InputField>().text = "";
                 GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
                 newparent.name = input;
                 newparent.GetComponent<SpriteRenderer>().color = sliderhandle.GetComponent<Image>().color;
@@ -327,6 +386,7 @@ public class GameManager : MonoBehaviour
                 
                 Plant newplant = new Plant();
                 newplant.id = input;
+                newplant.password = password;
                 plants.Add(newplant);
             }
         }
