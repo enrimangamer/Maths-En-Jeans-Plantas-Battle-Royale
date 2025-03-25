@@ -42,6 +42,9 @@ public class GameManager : MonoBehaviour
     public GameObject nextmovenumberobject;
     public float oddschangedirection = 0.3f;
     public float oddschangeattack = 0.15f;
+    public GameObject[] oddslefttext;
+    public GameObject[] oddsrighttext;
+    public GameObject[] oddsattacktext;
 
 
     private int name = 1;
@@ -114,12 +117,21 @@ public class GameManager : MonoBehaviour
         return newtiges;
     }
 
-    public void ChangeOddsLeft()
+    void UpdateOddsText()
     {
-        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        for (int i = 0; i < 5; i++)
         {
+            oddslefttext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsleft[i] * 33).ToString() + "%";
+            oddsrighttext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsright[i] * 33).ToString() + "%";
+            oddsattacktext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsattack[i] * 100).ToString() + "%";
             pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
+        }
+    }
+
+    public void ChangeOddsLeft(int movenumber)
+    {
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsleft[movenumber] < 3)
+        {
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsleft[movenumber] += oddschangedirection;
             if (plantmenuuser.oddsleft[movenumber] > 3)
@@ -131,16 +143,13 @@ public class GameManager : MonoBehaviour
             {
                 plantmenuuser.oddsright[movenumber] = 0;
             }
-
-            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+            UpdateOddsText();
         }
     }
-    public void ChangeOddsRight()
+    public void ChangeOddsRight(int movenumber)
     {
-        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsright[movenumber] < 3)
         {
-            pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsright[movenumber] += oddschangedirection;
             if (plantmenuuser.oddsright[movenumber] > 3)
@@ -153,23 +162,21 @@ public class GameManager : MonoBehaviour
                 plantmenuuser.oddsleft[movenumber] = 0;
             }
 
-            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+            UpdateOddsText();
         }
     }
-    public void ChangeOddsAttack()
+    public void ChangeOddsAttack(int movenumber)
     {
-        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsattack[movenumber] < 1)
         {
-            pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsattack[movenumber] += oddschangeattack;
-            if (plantmenuuser.oddsright[movenumber] > 1)
+            if (plantmenuuser.oddsattack[movenumber] > 1)
             {
-                plantmenuuser.oddsright[movenumber] = 1;
+                plantmenuuser.oddsattack[movenumber] = 1;
             }
 
-            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+            UpdateOddsText();
         }
     }
 
@@ -298,7 +305,7 @@ public class GameManager : MonoBehaviour
                 plantmenuuser = userplant;
                 plantMenu.SetActive(true);
                 pointsvailableobject.GetComponent<TMP_Text>().text = userplant.pointsAvailable.ToString();
-                nextmovenumberobject.GetComponent<TMP_Text>().text = "0";
+                UpdateOddsText();
                 
             } else {
                 newplantinput.GetComponent<TMP_InputField>().text = "";
@@ -357,6 +364,7 @@ public class GameManager : MonoBehaviour
                 plant.oddsleft[4] = 1;
                 plant.oddsright[4] = 1;
                 plant.oddsattack[4] = 0.5f;
+                UpdateOddsText();
             }
         }
 
