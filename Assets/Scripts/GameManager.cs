@@ -13,11 +13,12 @@ using UnityEngine.UI;
 
 public class Plant
 {
-    public int id { get; set; }
+    public string id { get; set; }
     public int pointsAvailable { get; set; } = 5;
     public float[] oddsleft { get; set; } = { 1, 1, 1, 1, 1};
-    public float[] oddsright { get; set; } = { 0, 0, 0, 0, 0};
+    public float[] oddsright { get; set; } = { 1, 1, 1, 1, 1};
     public float[] oddsattack { get; set; } = { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f};
+    
 }
 
 public class GameManager : MonoBehaviour
@@ -34,13 +35,20 @@ public class GameManager : MonoBehaviour
     public GameObject newplantinput;
     public GameObject sliderhandle;
     public List<Plant> plants = new List<Plant>();
+    public float timebetweenmoves = 2;
+    private Plant plantmenuuser = new Plant();
+    public GameObject plantMenu;
+    public GameObject pointsvailableobject;
+    public GameObject nextmovenumberobject;
+    public float oddschangedirection = 0.3f;
+    public float oddschangeattack = 0.15f;
 
 
     private int name = 1;
     Camera cam;
 
 
-    List<GameObject> Evolve(int iterationnum)
+    List<GameObject> Evolve()
     {
         List<GameObject> newtiges = new List<GameObject>();
         for (int i = 0; i < plantstiges.Count; i++)
@@ -51,7 +59,7 @@ public class GameManager : MonoBehaviour
             Plant userplant = new Plant();
             foreach (Plant plant in plants)
             {
-                if (plant.id == int.Parse(plantstiges[i].transform.parent.name))
+                if (plant.id == plantstiges[i].transform.parent.name)
                 {
                     userplant = plant;
                     break;
@@ -60,10 +68,10 @@ public class GameManager : MonoBehaviour
             
             float rand = Random.Range(0f, 3f);
             int finalrand;
-            if (rand < userplant.oddsleft[iterationnum])
+            if (rand < userplant.oddsleft[0])
             {
                 finalrand = 0;
-            } else if (rand < userplant.oddsleft[iterationnum] + userplant.oddsright[iterationnum])
+            } else if (rand < userplant.oddsleft[0] + userplant.oddsright[0])
             {
                 finalrand = 1;
             }
@@ -106,8 +114,67 @@ public class GameManager : MonoBehaviour
         return newtiges;
     }
 
+    public void ChangeOddsLeft()
+    {
+        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        {
+            pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
+            plantmenuuser.pointsAvailable -= 1;
+            plantmenuuser.oddsleft[movenumber] += oddschangedirection;
+            if (plantmenuuser.oddsleft[movenumber] > 3)
+            {
+                plantmenuuser.oddsleft[movenumber] = 3;
+            }
+            plantmenuuser.oddsright[movenumber] -= oddschangedirection / 2;
+            if (plantmenuuser.oddsright[movenumber] < 0)
+            {
+                plantmenuuser.oddsright[movenumber] = 0;
+            }
+
+            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+        }
+    }
+    public void ChangeOddsRight()
+    {
+        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        {
+            pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
+            plantmenuuser.pointsAvailable -= 1;
+            plantmenuuser.oddsright[movenumber] += oddschangedirection;
+            if (plantmenuuser.oddsright[movenumber] > 3)
+            {
+                plantmenuuser.oddsright[movenumber] = 3;
+            }
+            plantmenuuser.oddsleft[movenumber] -= oddschangedirection / 2;
+            if (plantmenuuser.oddsleft[movenumber] < 0)
+            {
+                plantmenuuser.oddsleft[movenumber] = 0;
+            }
+
+            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+        }
+    }
+    public void ChangeOddsAttack()
+    {
+        int movenumber = int.Parse(nextmovenumberobject.GetComponent<TMP_Text>().text);
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4)
+        {
+            pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
+            plantmenuuser.pointsAvailable -= 1;
+            plantmenuuser.oddsattack[movenumber] += oddschangeattack;
+            if (plantmenuuser.oddsright[movenumber] > 1)
+            {
+                plantmenuuser.oddsright[movenumber] = 1;
+            }
+
+            nextmovenumberobject.GetComponent<TMP_Text>().text = (movenumber + 1).ToString();
+        }
+    }
+
     
-    int CheckForCollisions(int iterationnum)
+    int CheckForCollisions()
     {
 
         foreach (GameObject p1 in plantstiges)
@@ -146,11 +213,11 @@ public class GameManager : MonoBehaviour
                             Plant plant2 = new Plant();
                             foreach (Plant plant in plants)
                             {
-                                if (plant.id == int.Parse(p1.transform.parent.name))
+                                if (plant.id == p1.transform.parent.name)
                                 {
                                     plant1 = plant;
                                 }
-                                if (plant.id == int.Parse(p2.transform.parent.name))
+                                if (plant.id == p2.transform.parent.name)
                                 {
                                     plant2 = plant;
                                 }
@@ -164,11 +231,11 @@ public class GameManager : MonoBehaviour
                                 float rand1 = Random.Range(0f, 1f);
                                 float rand2 = Random.Range(0f, 1f);
                                 finalrand = 0;
-                                if (rand1 > plant1.oddsleft[iterationnum])
+                                if (rand1 > plant1.oddsattack[0])
                                 {
                                     finalrand -= 1;
                                 } 
-                                if (rand2 > plant2.oddsleft[iterationnum])
+                                if (rand2 > plant2.oddsattack[0])
                                 {
                                     finalrand += 1;
                                 }
@@ -213,85 +280,89 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (newplantinput.GetComponent<TMP_InputField>().text.Length == 4)
+            String input = newplantinput.GetComponent<TMP_InputField>().text;
+            bool idexists = false;
+            Plant userplant = new Plant();
+            foreach (Plant plant in plants)
             {
-                String input = newplantinput.GetComponent<TMP_InputField>().text;
-                try
+                if (plant.id == input)
                 {
-                    int testint = int.Parse(input);
+                    idexists = true;
+                    userplant = plant;
+                    break;
                 }
-                catch (Exception e)
-                {
-                    newplantinput.GetComponent<TMP_InputField>().text = "";
-                    return;
-                }
+            }
+            if (idexists)
+            {
+                //User can control what his plant does
+                plantmenuuser = userplant;
+                plantMenu.SetActive(true);
+                pointsvailableobject.GetComponent<TMP_Text>().text = userplant.pointsAvailable.ToString();
+                nextmovenumberobject.GetComponent<TMP_Text>().text = "0";
                 
-                bool idexists = false;
-                Plant userplant = new Plant();
-                foreach (Plant plant in plants)
-                {
-                    if (plant.id == int.Parse(input))
-                    {
-                        idexists = true;
-                        userplant = plant;
-                        break;
-                    }
-                }
-                if (idexists)
-                {
-                    if (userplant.pointsAvailable > 0)
-                    {
-                        //User can control what his plant does
-                        
-                        //Once he hits the final button do this code:
-                        userplant.pointsAvailable = 0;
-                        //Deselect his plant;
-                    }
-                    
-                    
-                } else {
-                    newplantinput.GetComponent<TMP_InputField>().text = "";
-                    GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
-                    newparent.name = input;
-                    newparent.GetComponent<SpriteRenderer>().color = sliderhandle.GetComponent<Image>().color;
-                    GameObject newtige = Instantiate(tigePrefab, selectionCircle.transform.position, Quaternion.identity);
-                    newtige.transform.parent = newparent.transform;
-            
-                    float alpha = 1.0f;
-                    Gradient gradient = new Gradient();
-                    gradient.SetKeys(
-                        new GradientColorKey[] { new GradientColorKey(newtige.transform.parent.GetComponent<SpriteRenderer>().color, 0.0f) },
-                        new GradientAlphaKey[] { new GradientAlphaKey(alpha, 1.0f)}
-                    );
-                    newtige.GetComponent<LineRenderer>().colorGradient = gradient;
-            
-                    plantstiges.Add(newtige);
-                    
-                    Plant newplant = new Plant();
-                    newplant.id = int.Parse(input);
-                    plants.Add(newplant);
-                }
+            } else {
+                newplantinput.GetComponent<TMP_InputField>().text = "";
+                GameObject newparent = Instantiate(parentPrefab, selectionCircle.transform.position, Quaternion.identity);
+                newparent.name = input;
+                newparent.GetComponent<SpriteRenderer>().color = sliderhandle.GetComponent<Image>().color;
+                GameObject newtige = Instantiate(tigePrefab, selectionCircle.transform.position, Quaternion.identity);
+                newtige.transform.parent = newparent.transform;
+        
+                float alpha = 1.0f;
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(newtige.transform.parent.GetComponent<SpriteRenderer>().color, 0.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 1.0f)}
+                );
+                newtige.GetComponent<LineRenderer>().colorGradient = gradient;
+        
+                plantstiges.Add(newtige);
+                
+                Plant newplant = new Plant();
+                newplant.id = input;
+                plants.Add(newplant);
             }
         }
         selectionCircle.transform.position =
             new Vector3(cam.ScreenToWorldPoint(Input.mousePosition).x, ground.transform.position.y, 0);
-        if (timer + 2 < Time.time && move > 0)
+        if (move > 0)
         {
             move -= 1;
-            List<GameObject> newtiges = Evolve(4 - move);
+            List<GameObject> newtiges = Evolve();
             for (int tige = 0; tige < newtiges.Count; tige++)
             {
                 plantstiges.Add(newtiges[tige]);
             }
 
-            int collisionsverified = CheckForCollisions(4 - move);
+            int collisionsverified = CheckForCollisions();
             int limit = 0;
             while (collisionsverified == 0 && limit < 50)
             {
                 limit += 1;
                 plantstiges = (GameObject.FindGameObjectsWithTag("PlantTige")).ToList();
-                collisionsverified = CheckForCollisions(4 - move);
+                collisionsverified = CheckForCollisions();
             }
+
+            foreach (Plant plant in plants)
+            {
+                plant.pointsAvailable += 1;
+                //shift 1 left
+                for (int i = 1; i < 5; i++)
+                {
+                    plant.oddsleft[i - 1] = plant.oddsleft[i];
+                    plant.oddsright[i - 1] = plant.oddsright[i];
+                    plant.oddsattack[i - 1] = plant.oddsattack[i];
+                }
+
+                plant.oddsleft[4] = 1;
+                plant.oddsright[4] = 1;
+                plant.oddsattack[4] = 0.5f;
+            }
+        }
+
+        if (timer + timebetweenmoves < Time.time)
+        {
+            move = 1;
             timer = Time.time;
         }
         
@@ -308,6 +379,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene("SampleScene");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            plantMenu.SetActive(false);
         }
         
         //jump 1 night thing
