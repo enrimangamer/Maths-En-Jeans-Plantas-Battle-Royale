@@ -4670,17 +4670,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ddd3ba08e8e9742a731a8970d93553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantstiges: []
   selectionCircle: {fileID: 1751212551}
   ground: {fileID: 1804912593}
   tigePrefab: {fileID: 8299620453186189322, guid: b0518d49378a4a14c9a71b8f89d800d2, type: 3}
-  parentPrefab: {fileID: 8432466962908354555, guid: e9509ac4b6d0bd148881697bd7d3833d, type: 3}
+  parentPrefab: {fileID: 8432466962908354555, guid: e3b17eea26604e4479e040dc71a67862, type: 3}
   newplantinput: {fileID: 607079094}
   sliderhandle: {fileID: 1644801819}
+  deadPlant: {fileID: 8553092956536608252, guid: 77a55d44d85a4ca4e97064a19848f6ce, type: 3}
+  deadPlantColor: {r: 0, g: 0, b: 0, a: 0}
   timebetweenmoves: 300
   plantMenu: {fileID: 939745783}
   pointsvailableobject: {fileID: 600159857}
-  nextmovenumberobject: {fileID: 0}
   oddschangedirection: 0.3
   oddschangeattack: 0.15
   oddslefttext:
@@ -4704,6 +4704,7 @@ MonoBehaviour:
   passwordinput: {fileID: 1431958287}
   giftusername: {fileID: 720910606}
   giftquantity: {fileID: 894495450}
+  oddsofwinningifbiggerprof: 0.04
 --- !u!1 &1077367339
 GameObject:
   m_ObjectHideFlags: 0
