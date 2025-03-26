@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 using TMPro;
+using UnityEditor;
 using UnityEngine.UI;
 
 public class Plant
@@ -521,6 +522,14 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            foreach (Plant plant in plants)
+            {
+                float diff = Mathf.Sqrt(Mathf.Pow(plant.gameObject.transform.position.x - selectionCircle.transform.position.x, 2));
+                if (diff < 12)
+                {
+                    return;
+                }
+            }
             plantMenu.SetActive(false);
             newplantinput.GetComponent<TMP_InputField>().text = "";
             passwordinput.GetComponent<TMP_InputField>().text = "";
