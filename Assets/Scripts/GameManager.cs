@@ -91,14 +91,28 @@ public class GameManager : MonoBehaviour
         Plant plant1 = getPlantById(id1);
         Plant plant2 = getPlantById(id2);
         if (!plant1.isAlive || !plant2.isAlive) return;
-        Plant toDestroy = null;
-        if (Random.Range(0, 2) == 0)
+        float oddsplant1 = plant1.oddsattack[0];
+        float oddsplant2 = plant2.oddsattack[0];
+        float prof1 = GetProfPlant(plant1);
+        float prof2 = GetProfPlant(plant2);
+        if (prof1 < prof2)
         {
-            toDestroy = plant1;
+            oddsplant1 += (prof2 - prof1) * oddsofwinningifbiggerprof;
+        } else if (prof2 < prof1)
+        {
+            oddsplant2 += (prof1 - prof2) * oddsofwinningifbiggerprof;
+        }
+        
+        Plant toDestroy = null;
+        float totalodds = oddsplant1 + oddsplant2;
+        float random = Random.Range(0, totalodds);
+        if (random < oddsplant1)
+        {
+            toDestroy = plant2;
         }
         else
         {
-            toDestroy = plant2;
+            toDestroy = plant1;
         }
         toDestroy.destroyPlant();
         plants.Remove(toDestroy);
@@ -627,7 +641,7 @@ public class GameManager : MonoBehaviour
             {
                 if (lastkey == 4)
                 {
-                    timebetweenmoves -= 30;
+                    move = 1;
                 }
                 else
                 {
