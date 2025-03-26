@@ -90,11 +90,13 @@ public class GameManager : MonoBehaviour
     {
         Plant plant1 = getPlantById(id1);
         Plant plant2 = getPlantById(id2);
+        if (plant1 == null || plant2 == null) return;
         if (!plant1.isAlive || !plant2.isAlive) return;
         float oddsplant1 = plant1.oddsattack[0];
         float oddsplant2 = plant2.oddsattack[0];
         float prof1 = GetProfPlant(plant1);
         float prof2 = GetProfPlant(plant2);
+        
         if (prof1 < prof2)
         {
             oddsplant1 += (prof2 - prof1) * oddsofwinningifbiggerprof;
@@ -104,16 +106,38 @@ public class GameManager : MonoBehaviour
         }
         
         Plant toDestroy = null;
-        float totalodds = oddsplant1 + oddsplant2;
-        float random = Random.Range(0, totalodds);
-        if (random < oddsplant1)
+        int finalrand = 0;
+        int maxwhile = 0;
+        while (finalrand == 0 && maxwhile < 10)
+        {
+            maxwhile += 1;
+            float rand1 = Random.Range(0f, 1f);
+            float rand2 = Random.Range(0f, 1f);
+            finalrand = 0;
+            if (rand1 > oddsplant1)
+            {
+                finalrand -= 1;
+            } 
+            if (rand2 > oddsplant2)
+            {
+                finalrand += 1;
+            }
+        }
+
+        if (finalrand == 0)
+        {
+            finalrand = (Random.Range(0, 2) * 2) - 1;
+        }
+        //if -1, plant2 won, if 1, plant 1 won, if 0, none won or both won
+        if (finalrand == 1)
         {
             toDestroy = plant2;
         }
-        else
+        else if (finalrand == -1)
         {
             toDestroy = plant1;
         }
+        
         toDestroy.destroyPlant();
         plants.Remove(toDestroy);
     }
@@ -579,11 +603,6 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             cam.orthographicSize -= 1;
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene("SampleScene");
         }
         
         if (Input.GetKeyDown(KeyCode.Escape))
