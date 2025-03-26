@@ -17,13 +17,14 @@ public class Plant
     public string id;
     public string password;
     public int pointsAvailable = 5;
-    public float[] oddsleft = { 1, 1, 1, 1, 1 };
-    public float[] oddsright = { 1, 1, 1, 1, 1 };
-    public float[] oddsattack = { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f };
+    public float[] oddsleft = { 1, 1, 1, 1, 1, 1, 1 };
+    public float[] oddsright = { 1, 1, 1, 1, 1 , 1, 1};
+    public float[] oddsattack = { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f };
 
     public Color color;
 
     public List<GameObject> allTiges = new List<GameObject>();
+    public List<GameObject> nonmoveTiges = new List<GameObject>();
     public GameObject gameObject;
     public bool isAlive = true;
     public void destroyPlant()
@@ -38,6 +39,11 @@ public class Plant
             new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 1.0f) }
         );
         foreach (var t in allTiges)
+        {
+            t.GetComponent<LineRenderer>().colorGradient = gradient;
+            t.GetComponent<Collider2D>().enabled = false;
+        }
+        foreach (var t in nonmoveTiges)
         {
             t.GetComponent<LineRenderer>().colorGradient = gradient;
             t.GetComponent<Collider2D>().enabled = false;
@@ -77,6 +83,7 @@ public class GameManager : MonoBehaviour
     public GameObject giftusername;
     public GameObject giftquantity;
     public float oddsofwinningifbiggerprof = 0.04f;
+    public TMP_Text timertext;
 
     public Plant getPlantById(string id)
     {
@@ -166,6 +173,7 @@ public class GameManager : MonoBehaviour
                         difference = Mathf.Round(difference * 10) / 10;
                         if (difference == 0f)
                         {
+                            plant.nonmoveTiges.Add(tige2);
                             plant.allTiges.RemoveAt(y);
                             y -= 1;
                             count -= 1;
@@ -236,7 +244,7 @@ public class GameManager : MonoBehaviour
     
     void UpdateOddsText()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 7; i++)
         {
             oddslefttext[i].text = Math.Round(plantmenuuser.oddsleft[i] * 33).ToString() + "%";
             oddsrighttext[i].text = Math.Round(plantmenuuser.oddsright[i] * 33).ToString() + "%";
@@ -247,7 +255,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeOddsLeft(int movenumber)
     {
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsleft[movenumber] < 3)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 6 && plantmenuuser.oddsleft[movenumber] < 3)
         {
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsleft[movenumber] += oddschangedirection;
@@ -265,7 +273,7 @@ public class GameManager : MonoBehaviour
     }
     public void ChangeOddsRight(int movenumber)
     {
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsright[movenumber] < 3)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 6 && plantmenuuser.oddsright[movenumber] < 3)
         {
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsright[movenumber] += oddschangedirection;
@@ -284,7 +292,7 @@ public class GameManager : MonoBehaviour
     }
     public void ChangeOddsAttack(int movenumber)
     {
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsattack[movenumber] < 2)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 6 && plantmenuuser.oddsattack[movenumber] < 2)
         {
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsattack[movenumber] += oddschangeattack;
@@ -584,16 +592,16 @@ public class GameManager : MonoBehaviour
             {
                 plant.pointsAvailable += 1;
                 //shift 1 left
-                for (int i = 1; i < 5; i++)
+                for (int i = 1; i < 7; i++)
                 {
                     plant.oddsleft[i - 1] = plant.oddsleft[i];
                     plant.oddsright[i - 1] = plant.oddsright[i];
                     plant.oddsattack[i - 1] = plant.oddsattack[i];
                 }
 
-                plant.oddsleft[4] = 1;
-                plant.oddsright[4] = 1;
-                plant.oddsattack[4] = 0.5f;
+                plant.oddsleft[6] = 1;
+                plant.oddsright[6] = 1;
+                plant.oddsattack[6] = 0.5f;
                 UpdateOddsText();
             }
         }
@@ -603,6 +611,8 @@ public class GameManager : MonoBehaviour
             move = 1;
             timer = Time.time;
         }
+
+        timertext.text = Mathf.RoundToInt(300 - Time.time + timer).ToString();
 
         //to add
         if (Input.GetKeyDown(KeyCode.Z))
