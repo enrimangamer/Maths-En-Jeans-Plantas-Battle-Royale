@@ -11,6 +11,7 @@ public class CameraManager : MonoBehaviour
     public float cameraZoomMouseForce;
     public static CameraManager instance;
     public bool lerpingPos = false;
+    Vector2 mouseDeltta = Vector2.zero;
     private void Start()
     {
         cam = Camera.main;
@@ -33,14 +34,14 @@ public class CameraManager : MonoBehaviour
         {
             startMousePos = Input.mousePosition;
             startCamPos = cam.transform.position;
-            StartCoroutine(lerpToPoint(cam.ScreenToWorldPoint(startMousePos)));
+           // StartCoroutine(lerpToPoint(cam.ScreenToWorldPoint(startMousePos)));
         }
-     /*   if (Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse1))
         {
-            Vector2 mouseDeltta = startMousePos - (Vector2)Input.mousePosition;
-            cam.transform.position = startCamPos + mouseDeltta * cameraSpeed;
-            cam.transform.position = cam.transform.position + new Vector3(0, 0, -10);
-        }*/
+            mouseDeltta = startMousePos - (Vector2)Input.mousePosition;
+        }
+        cam.transform.position = Vector3.Lerp(cam.transform.position, startCamPos + mouseDeltta * cameraSpeed, Time.deltaTime * 15);
+        cam.transform.position = cam.transform.position + new Vector3(0, 0, -10);
     }
 
     public void startLerpToPlant(GameObject plant)
@@ -53,13 +54,15 @@ public class CameraManager : MonoBehaviour
     IEnumerator lerpToPoint(Vector3 pos)
     {
         lerpingPos = true;
-        while (MathHelpers.distance(pos,gameObject.transform.position)>0.05f)
+        while (MathHelpers.distance(pos, gameObject.transform.position) > 0.05f)
         {
-            transform.position = Vector3.Lerp(gameObject.transform.position, pos, Time.deltaTime*5);
+            transform.position = Vector3.Lerp(gameObject.transform.position, pos, Time.deltaTime * 5);
             transform.position = new Vector3(transform.position.x, transform.position.y, -10);
             yield return new WaitForEndOfFrame();
         }
         lerpingPos = false;
+        mouseDeltta = pos;
+
         yield return null;
     }
     IEnumerator lerpToZoom(float zoom)

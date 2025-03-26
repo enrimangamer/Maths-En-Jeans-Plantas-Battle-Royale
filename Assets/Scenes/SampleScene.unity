@@ -1355,7 +1355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraSpeed: 0.03
-  cameraZoomMouseForce: 2
+  cameraZoomMouseForce: 5
   lerpingPos: 0
 --- !u!1 &600159857
 GameObject:
@@ -2418,10 +2418,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   engraiPrefab: {fileID: 7566666710269481350, guid: 814812a647bdfd945849d4c37a4ab5d4, type: 3}
-  noiseScale: 10
-  mapScale: 700
+  noiseScale: 45
+  mapScale: 1000
   engraiSep: 0.4
-  fillPercent: 0.6
+  fillPercent: 0.7
 --- !u!1 &852591005
 GameObject:
   m_ObjectHideFlags: 0
@@ -3343,7 +3343,7 @@ MonoBehaviour:
   newplantinput: {fileID: 607079094}
   sliderhandle: {fileID: 1644801819}
   deadPlant: {fileID: 8553092956536608252, guid: 77a55d44d85a4ca4e97064a19848f6ce, type: 3}
-  deadPlantColor: {r: 0, g: 0, b: 0, a: 0}
+  deadPlantColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
   timebetweenmoves: 300
   plantMenu: {fileID: 939745783}
   pointsvailableobject: {fileID: 600159857}
@@ -5217,7 +5217,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 25, y: 0, z: 1}
+  - {x: 1, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -5286,8 +5286,8 @@ Transform:
   m_GameObject: {fileID: 1804912593}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -76.4, y: 3.19, z: 0.026089437}
-  m_LocalScale: {x: 9.53, y: 1, z: 1}
+  m_LocalPosition: {x: -200, y: 3.19, z: 0.026089437}
+  m_LocalScale: {x: 400, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

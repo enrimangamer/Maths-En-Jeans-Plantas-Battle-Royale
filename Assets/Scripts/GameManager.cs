@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
     public GameObject giftquantity;
     public float oddsofwinningifbiggerprof = 0.04f;
 
-    Plant getPlantById(string id)
+    public Plant getPlantById(string id)
     {
         foreach (Plant plant in plants)
         {

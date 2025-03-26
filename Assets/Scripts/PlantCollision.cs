@@ -7,6 +7,8 @@ public class PlantCollision : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!collision.gameObject.transform.CompareTag("PlantTige")) return;
+
         PlantCollision plant = collision.gameObject.GetComponentInParent<PlantCollision>();
         if (plant.plantId != plantId)
         {
