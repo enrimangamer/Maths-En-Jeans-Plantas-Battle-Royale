@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     public GameObject passwordinput;
     public GameObject giftusername;
     public GameObject giftquantity;
+    public float oddsofwinningifbiggerprof = 0.04f;
 
 
     private int name = 1;
@@ -184,6 +185,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    float GetProfPlant(Plant plant)
+    {
+        float minprof = 100;
+        float tigeprof;
+        foreach (GameObject tige in plantstiges)
+        {
+            if (tige.transform.parent.name == plant.id)
+            {
+                tigeprof = tige.transform.position.y + tige.GetComponent<LineRenderer>()
+                    .GetPosition(tige.GetComponent<LineRenderer>().positionCount - 1).y;
+                if (tigeprof < minprof ){
+                    minprof = tigeprof;
+                }
+            }
+        }
+
+        return minprof;
+    }
+
     
     int CheckForCollisions()
     {
@@ -234,6 +254,18 @@ public class GameManager : MonoBehaviour
                                 }
                             }
                             
+                            float oddsplant1 = plant1.oddsattack[0];
+                            float oddsplant2 = plant2.oddsattack[0];
+                            float prof1 = GetProfPlant(plant1);
+                            float prof2 = GetProfPlant(plant2);
+                            if (prof1 < prof2)
+                            {
+                                oddsplant1 += (prof2 - prof1) * oddsofwinningifbiggerprof;
+                            } else if (prof2 < prof1)
+                            {
+                                oddsplant2 += (prof1 - prof2) * oddsofwinningifbiggerprof;
+                            }
+                            
                             int finalrand = 0;
                             int maxwhile = 0;
                             while (finalrand == 0 && maxwhile < 10)
@@ -242,11 +274,11 @@ public class GameManager : MonoBehaviour
                                 float rand1 = Random.Range(0f, 1f);
                                 float rand2 = Random.Range(0f, 1f);
                                 finalrand = 0;
-                                if (rand1 > plant1.oddsattack[0])
+                                if (rand1 > oddsplant1)
                                 {
                                     finalrand -= 1;
                                 } 
-                                if (rand2 > plant2.oddsattack[0])
+                                if (rand2 > oddsplant2)
                                 {
                                     finalrand += 1;
                                 }
