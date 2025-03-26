@@ -36,11 +36,10 @@ public class GameManager : MonoBehaviour
     public GameObject newplantinput;
     public GameObject sliderhandle;
     public List<Plant> plants = new List<Plant>();
-    public float timebetweenmoves = 2;
+    public float timebetweenmoves = 300;
     private Plant plantmenuuser = new Plant();
     public GameObject plantMenu;
     public GameObject pointsvailableobject;
-    public GameObject nextmovenumberobject;
     public float oddschangedirection = 0.3f;
     public float oddschangeattack = 0.15f;
     public GameObject[] oddslefttext;
@@ -488,34 +487,34 @@ public class GameManager : MonoBehaviour
         
         //jump 1 night thing
         if(Input.anyKeyDown) {
-            if(Input.GetKeyDown(KeyCode.E)) {
+            if(Input.GetKeyDown(KeyCode.L)) {
                 if(lastkey == 0) {
                     lastkey = 1;
                 } else {
                     lastkey = 1;
                 }
-            } else if(Input.GetKeyDown(KeyCode.N)) {
+            } else if(Input.GetKeyDown(KeyCode.F)) {
                 if(lastkey == 1) {
                     lastkey = 2;
                 } else {
                     lastkey = 0;
                 }
-            } else if(Input.GetKeyDown(KeyCode.T)) {
+            } else if(Input.GetKeyDown(KeyCode.M)) {
                 if(lastkey == 2) {
                     lastkey = 3;
                 } else {
                     lastkey = 0;
                 }
-            } else if(Input.GetKeyDown(KeyCode.I)) {
+            } else if(Input.GetKeyDown(KeyCode.E)) {
                 if(lastkey == 3) {
                     lastkey = 4;
                 } else {
                     lastkey = 0;
                 }
-            } else if(Input.GetKeyDown(KeyCode.Q)) {
+            } else if(Input.GetKeyDown(KeyCode.S)) {
                 if(lastkey == 4)
                 {
-                    move = 5;
+                    timebetweenmoves -= 30;
                 } else {
                     lastkey = 0;
                 }
