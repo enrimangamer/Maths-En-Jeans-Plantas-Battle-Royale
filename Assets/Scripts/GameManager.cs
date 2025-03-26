@@ -491,6 +491,7 @@ public class GameManager : MonoBehaviour
             //User can control what his plant does
             plantmenuuser = userplant;
             plantMenu.SetActive(true);
+            CameraManager.instance.startLerpToPlant(userplant.gameObject);
             pointsvailableobject.GetComponent<TMP_Text>().text = userplant.pointsAvailable.ToString();
             UpdateOddsText();
         }
