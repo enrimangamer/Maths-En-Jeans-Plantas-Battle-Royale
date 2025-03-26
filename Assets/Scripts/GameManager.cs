@@ -104,6 +104,39 @@ public class GameManager : MonoBehaviour
         plants.Remove(toDestroy);
     }
 
+    void CheckDoubleTige()
+    {
+        GameObject tige1;
+        GameObject tige2;
+        LineRenderer tige1line;
+        LineRenderer tige2line;
+        foreach (Plant plant in plants)
+        {
+            int count = plant.allTiges.Count;
+            for (int i = 0; i < count; i++)
+            {
+                tige1 = plant.allTiges[i];
+                tige1line = tige1.GetComponent<LineRenderer>();
+                for (int y = 0; y < count; y++)
+                {
+                    if (i != y)
+                    {
+                        tige2 = plant.allTiges[y];
+                        tige2line = tige2.GetComponent<LineRenderer>();
+                        float difference = (tige1.transform.position.x + tige1line.GetPosition(tige1line.positionCount - 1).x) - (tige2.transform.position.x + tige2line.GetPosition(tige2line.positionCount - 1).x);
+                        difference = Mathf.Round(difference * 10) / 10;
+                        if (difference == 0f)
+                        {
+                            plant.allTiges.RemoveAt(y);
+                            y -= 1;
+                            count -= 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void Evolve()
     {
         foreach (Plant plant in plants)
@@ -166,9 +199,9 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            oddslefttext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsleft[i] * 33).ToString() + "%";
-            oddsrighttext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsright[i] * 33).ToString() + "%";
-            oddsattacktext[i].GetComponent<TMP_Text>().text = Math.Round(plantmenuuser.oddsattack[i] * 100).ToString() + "%";
+            oddslefttext[i].text = Math.Round(plantmenuuser.oddsleft[i] * 33).ToString() + "%";
+            oddsrighttext[i].text = Math.Round(plantmenuuser.oddsright[i] * 33).ToString() + "%";
+            oddsattacktext[i].text = Math.Round(plantmenuuser.oddsattack[i] * 100).ToString() + "%";
             pointsvailableobject.GetComponent<TMP_Text>().text = plantmenuuser.pointsAvailable.ToString();
         }
     }
@@ -449,6 +482,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            plantMenu.SetActive(false);
             newplantinput.GetComponent<TMP_InputField>().text = "";
             passwordinput.GetComponent<TMP_InputField>().text = "";
             Plant newplant = new Plant();
@@ -481,6 +515,7 @@ public class GameManager : MonoBehaviour
             move -= 1;
 
             Evolve();
+            CheckDoubleTige();
 
             /*  for (int tige = 0; tige < newtiges.Count; tige++)
               {
