@@ -61,8 +61,8 @@ public class CameraManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         lerpingPos = false;
-        mouseDeltta = pos;
-
+        mouseDeltta = Vector2.zero;
+        startCamPos = cam.transform.position;
         yield return null;
     }
     IEnumerator lerpToZoom(float zoom)
