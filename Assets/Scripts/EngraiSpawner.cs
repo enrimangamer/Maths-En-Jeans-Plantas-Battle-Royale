@@ -1,16 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 public class EngraiSpawner : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public GameObject engraiPrefab;
+    public float noiseScale;
+    public int mapScale;
+    public float engraiSep;
+    public float fillPercent;
+    private void Start()
     {
-        
+        generateEngrai();
     }
-
-    // Update is called once per frame
-    void Update()
+    public void generateEngrai()
     {
-        
+        for (int x = 0; x < mapScale; x++)
+        {
+            for (int y = 0; y < mapScale; y++)
+            {
+                if (Random.Range(0, Mathf.PerlinNoise((float)x/ noiseScale, (float)y/ noiseScale)) > fillPercent)
+                {
+                    Instantiate(engraiPrefab, new Vector3(x* engraiSep - mapScale/2*engraiSep, -y* engraiSep, 0), Quaternion.identity);
+                }
+            }
+        }
     }
 }
