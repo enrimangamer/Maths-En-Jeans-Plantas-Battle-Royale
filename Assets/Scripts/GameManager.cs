@@ -284,13 +284,13 @@ public class GameManager : MonoBehaviour
     }
     public void ChangeOddsAttack(int movenumber)
     {
-        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsattack[movenumber] < 1)
+        if (plantmenuuser.pointsAvailable > 0 && movenumber <= 4 && plantmenuuser.oddsattack[movenumber] < 2)
         {
             plantmenuuser.pointsAvailable -= 1;
             plantmenuuser.oddsattack[movenumber] += oddschangeattack;
-            if (plantmenuuser.oddsattack[movenumber] > 1)
+            if (plantmenuuser.oddsattack[movenumber] > 2)
             {
-                plantmenuuser.oddsattack[movenumber] = 1;
+                plantmenuuser.oddsattack[movenumber] = 2;
             }
 
             UpdateOddsText();
