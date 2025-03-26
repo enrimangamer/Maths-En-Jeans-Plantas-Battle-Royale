@@ -69,9 +69,9 @@ public class GameManager : MonoBehaviour
     public GameObject pointsvailableobject;
     public float oddschangedirection = 0.3f;
     public float oddschangeattack = 0.15f;
-    public GameObject[] oddslefttext;
-    public GameObject[] oddsrighttext;
-    public GameObject[] oddsattacktext;
+    public TMP_Text[] oddslefttext;
+    public TMP_Text[] oddsrighttext;
+    public TMP_Text[] oddsattacktext;
     public GameObject passwordinput;
     public GameObject giftusername;
     public GameObject giftquantity;
