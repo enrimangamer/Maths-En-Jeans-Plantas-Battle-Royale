@@ -85,6 +85,7 @@ public class GameManager : MonoBehaviour
     public GameObject giftquantity;
     public float oddsofwinningifbiggerprof = 0.04f;
     public TMP_Text timertext;
+    private int lastkey2; //add
 
     public Plant getPlantById(string id)
     {
@@ -185,61 +186,58 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Evolve()
+    private void Evolve(Plant plant)
     {
-        foreach (Plant plant in plants)
+        List<GameObject> newtiges = new List<GameObject>();
+        for (int i = 0; i < plant.allTiges.Count; i++)
         {
-            List<GameObject> newtiges = new List<GameObject>();
-            for (int i = 0; i < plant.allTiges.Count; i++)
+            LineRenderer lineRenderer = plant.allTiges[i].GetComponent<LineRenderer>();
+
+            float rand = Random.Range(0f, 3f);
+            int finalrand;
+            if (rand < plant.oddsleft[0])
             {
-                LineRenderer lineRenderer = plant.allTiges[i].GetComponent<LineRenderer>();
-
-                float rand = Random.Range(0f, 3f);
-                int finalrand;
-                if (rand < plant.oddsleft[0])
-                {
-                    finalrand = 0;
-                }
-                else if (rand < plant.oddsleft[0] + plant.oddsright[0])
-                {
-                    finalrand = 1;
-                }
-                else
-                {
-                    finalrand = 2;
-                }
-
-                if (finalrand == 2)
-                {
-                    Vector2 newPos = plant.allTiges[i].transform.position + lineRenderer.GetPosition(lineRenderer.positionCount - 1);
-                    GameObject newtige = CreateNewTige(plant.allTiges[i].transform.parent, plant, newPos);
-
-                    newtige.GetComponent<LineRenderer>().positionCount += 1;
-                    newtige.GetComponent<LineRenderer>().SetPosition(1, new Vector3(1, -1, 0));
-                    tigerSetColider(newtige, Vector3.zero, new Vector2(1, -1));
-
-                    //tigerSetColider(newtige, Vector2.zero, Vector2.one);
-                    newtiges.Add(newtige);
-                }
-                lineRenderer.positionCount += 1;
-                Vector3 newPosition = lineRenderer.GetPosition(lineRenderer.positionCount - 2);
-
-                if (finalrand == 0 || finalrand == 2)
-                {
-                    newPosition += new Vector3(-1, -1, 0);
-                }
-                if (finalrand == 1)
-                {
-                    newPosition += new Vector3(1, -1, 0);
-                }
-                tigerSetColider(plant.allTiges[i], lineRenderer.GetPosition(lineRenderer.positionCount - 2), newPosition);
-                lineRenderer.SetPosition(lineRenderer.positionCount - 1, newPosition);
+                finalrand = 0;
             }
-            foreach (var nTige in newtiges)
+            else if (rand < plant.oddsleft[0] + plant.oddsright[0])
             {
-                plant.allTiges.Add(nTige);
-
+                finalrand = 1;
             }
+            else
+            {
+                finalrand = 2;
+            }
+
+            if (finalrand == 2)
+            {
+                Vector2 newPos = plant.allTiges[i].transform.position + lineRenderer.GetPosition(lineRenderer.positionCount - 1);
+                GameObject newtige = CreateNewTige(plant.allTiges[i].transform.parent, plant, newPos);
+
+                newtige.GetComponent<LineRenderer>().positionCount += 1;
+                newtige.GetComponent<LineRenderer>().SetPosition(1, new Vector3(1, -1, 0));
+                tigerSetColider(newtige, Vector3.zero, new Vector2(1, -1));
+
+                //tigerSetColider(newtige, Vector2.zero, Vector2.one);
+                newtiges.Add(newtige);
+            }
+            lineRenderer.positionCount += 1;
+            Vector3 newPosition = lineRenderer.GetPosition(lineRenderer.positionCount - 2);
+
+            if (finalrand == 0 || finalrand == 2)
+            {
+                newPosition += new Vector3(-1, -1, 0);
+            }
+            if (finalrand == 1)
+            {
+                newPosition += new Vector3(1, -1, 0);
+            }
+            tigerSetColider(plant.allTiges[i], lineRenderer.GetPosition(lineRenderer.positionCount - 2), newPosition);
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, newPosition);
+        }
+        foreach (var nTige in newtiges)
+        {
+            plant.allTiges.Add(nTige);
+
         }
     }
     
@@ -306,7 +304,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    float GetProfPlant(Plant plant)
+    public void Advance1()
+    {
+        if (plantmenuuser.pointsAvailable >= 10)
+        {
+            plantmenuuser.pointsAvailable -= 10;
+            Evolve(plantmenuuser);
+            CheckDoubleTige();
+            //shift 1 left
+            for (int i = 1; i < 7; i++)
+            {
+                plantmenuuser.oddsleft[i - 1] = plantmenuuser.oddsleft[i];
+                plantmenuuser.oddsright[i - 1] = plantmenuuser.oddsright[i];
+                plantmenuuser.oddsattack[i - 1] = plantmenuuser.oddsattack[i];
+            }
+
+            plantmenuuser.oddsleft[6] = 1;
+            plantmenuuser.oddsright[6] = 1;
+            plantmenuuser.oddsattack[6] = 0.5f;
+            UpdateOddsText();
+        }
+    }
+
+    public float GetProfPlant(Plant plant)
     {
         float minprof = 100;
         float tigeprof;
@@ -574,7 +594,10 @@ public class GameManager : MonoBehaviour
         {
             move -= 1;
 
-            Evolve();
+            foreach (Plant plant in plants)
+            {
+                Evolve(plant);
+            }
             CheckDoubleTige();
 
             /*  for (int tige = 0; tige < newtiges.Count; tige++)
@@ -631,6 +654,72 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             plantMenu.SetActive(false);
+        }
+
+
+        if (Input.anyKeyDown)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (lastkey2 == 0)
+                {
+                    lastkey2 = 1;
+                }
+                else
+                {
+                    lastkey2 = 1;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (lastkey2 == 1)
+                {
+                    lastkey2 = 2;
+                }
+                else
+                {
+                    lastkey2 = 0;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.M))
+            {
+                if (lastkey2 == 2)
+                {
+                    lastkey2 = 3;
+                }
+                else
+                {
+                    lastkey2 = 0;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.O))
+            {
+                if (lastkey2 == 3)
+                {
+                    lastkey2 = 4;
+                }
+                else
+                {
+                    lastkey2 = 0;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.V))
+            {
+                if (lastkey2 == 4)
+                {
+                    Plant planttoremove = getPlantById(newplantinput.GetComponent<TMP_InputField>().text);
+                    planttoremove.destroyPlant();
+                    plants.Remove(planttoremove);
+                }
+                else
+                {
+                    lastkey2 = 0;
+                }
+            }
+            else
+            {
+                lastkey2 = 0;
+            }
         }
 
         //jump 1 night thing
