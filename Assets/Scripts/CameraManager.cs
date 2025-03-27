@@ -69,7 +69,7 @@ public class CameraManager : MonoBehaviour
     {
         while (Mathf.Pow(cam.orthographicSize - zoom, 2) > 0.1f)
         {
-            cam.orthographicSize=Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime*2);
+            cam.orthographicSize=Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime*3);
             yield return new WaitForEndOfFrame();
         }
         yield return null;

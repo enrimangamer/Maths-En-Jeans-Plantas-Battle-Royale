@@ -27,6 +27,7 @@ public class Plant
     public List<GameObject> nonmoveTiges = new List<GameObject>();
     public GameObject gameObject;
     public bool isAlive = true;
+    public TMP_Text connectedLeaderboard;
     public void destroyPlant()
     {
         isAlive = false;
@@ -554,7 +555,10 @@ public class GameManager : MonoBehaviour
             newplant.gameObject = newparent;
             newplant.allTiges.Add(CreateNewTige(newparent.transform, newplant, selectionCircle.transform.position));
             newparent.GetComponent<PlantCollision>().plantId = newplant.id;
+            newparent.GetComponentInChildren<TMP_Text>().text = newplant.id;
         }
+        newplantinput.GetComponent<TMP_InputField>().text = "";
+        passwordinput.GetComponent<TMP_InputField>().text = "";
     }
 
     // Update is called once per frame
