@@ -3,8 +3,8 @@ Game can be played in the NewBuilds folder (Enracinee Royale.exe)
 This is an ideal plant root simulation we turned into a videogame to entertain the participants of the Maths En Jeans congress (Math Research Project).
 Our project was simple: imagine a plant whose roots grew in one of three ways: they could go right, left, or split in two. After a set amount of time, this operation repeats. If two plants touch each other, one of them randomly dies.
 
-Seeing the potential of this idea, we turned it into a videogame, but not any type of videogame: a day-long multiplayer game. Participants could come to our stand and place their plant, and then they could walk away to see other projects. Meanwhile, each 3 minutes their roots grew 1 unit. They could then come back whenever they wanted to access their plant and see how it's going. 
-While the roots descended they caught points, which we called "engrais". These points could then be used by the participants to change the odds of each of their roots' actions (going left, right, or winning an encounter with another plant). This made it a strategy game, where you had to see where other plants were headed, as well as where the engrais were, to choose a path for your own plant, to try to win every encounter.
+Seeing the potential of this idea, we turned it into a videogame, but not any type of videogame: a day-long multiplayer game. Participants could come to our stand and place their plant, and then they could walk away to see other projects. Meanwhile, every 3 minutes their roots would grow 1 unit. They could then come back whenever they wanted to access their plant and see how it's going. 
+While the roots descended they caught points, which we called "engrais". These points could then be used by the participants to change the odds of each of their roots' actions (going left, right, or winning an encounter with another plant). This made it a strategy game, where you had to see where other plants were headed, as well as where the "engrais" were, to choose a path for your own plant, to try to win every encounter.
 
 Basic Controls:
 - Right click and move mouse to move the camera
